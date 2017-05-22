@@ -1,0 +1,2 @@
+-record(monitor, {valuesByStation, stationsByName, stationsByLocation, stationNames, stationLocations}).
+-record(station, {name, location}).

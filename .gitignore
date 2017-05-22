@@ -1,0 +1,12 @@
+# Rebar
+.rebar/
+
+# EUnit
+.eunit/
+
+# Output
+ebin/
+
+# Intellij IDEA
+*.idea/
+*.iml
