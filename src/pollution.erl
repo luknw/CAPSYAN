@@ -1,5 +1,6 @@
 -module(pollution).
 -export([
+  crash/0,
   createMonitor/0,
   addStation/3,
   addValue/5,
@@ -162,3 +163,7 @@ getStationVariation(Monitor = #monitor{}, Station = #station{}, Type) ->
   {Min, Max} = minmax(maps:values(maps:get(Type, maps:get(Station, Monitor#monitor.valuesByStation))))
   , Max - Min
 .
+
+
+crash() ->
+  1 / 0.

@@ -4,6 +4,18 @@
 -include_lib("../src/monitor.hrl").
 
 
+supervisor_restores_rPollution_server_after_crash_test() ->
+  {ok, SupervisorPid} = pollution_app:start(foo, foo),
+  [{rPollution, _, _, _}] = supervisor:which_children(SupervisorPid),
+
+  ?assertMatch(
+    {'EXIT', {{function_clause, [{rPollution, terminate, [{badarith, _} | _], _} | _]}, _}},
+    catch rPollution:crash()),
+  timer:sleep(0),
+
+  ?assertMatch(#monitor{}, rPollution:createMonitor()).
+
+
 createMonitor_returns_monitor_record_test() ->
   ?assertMatch(#monitor{}, pollution:createMonitor()).
 

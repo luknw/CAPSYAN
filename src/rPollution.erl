@@ -3,49 +3,50 @@
 -behaviour(gen_server).
 
 -export([
+  crash/0,
   start_link/0,
-  stop/1,
-  createMonitor/1,
-  addStation/4,
-  addValue/6,
-  removeValue/5,
-  getOneValue/5,
-  getStationMean/4,
-  getDailyMean/4,
-  getMaximumVariationStation/3]).
+  stop/0,
+  createMonitor/0,
+  addStation/3,
+  addValue/5,
+  removeValue/4,
+  getOneValue/4,
+  getStationMean/3,
+  getDailyMean/3,
+  getMaximumVariationStation/2]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2]).
 
 
-createMonitor(Pid) -> gen_server:call(Pid, {createMonitor, []}).
+createMonitor() -> gen_server:call({global, rPollution}, {createMonitor, []}).
 
-addStation(Monitor, Name, Location, Pid) ->
-  gen_server:call(Pid, {addStation, [Monitor, Name, Location]}).
+addStation(Monitor, Name, Location) ->
+  gen_server:call({global, rPollution}, {addStation, [Monitor, Name, Location]}).
 
-addValue(Monitor, Station, Type, Date, Value, Pid) ->
-  gen_server:call(Pid, {addValue, [Monitor, Station, Type, Date, Value]}).
+addValue(Monitor, Station, Type, Date, Value) ->
+  gen_server:call({global, rPollution}, {addValue, [Monitor, Station, Type, Date, Value]}).
 
-removeValue(Monitor, Station, Type, Date, Pid) ->
-  gen_server:call(Pid, {removeValue, [Monitor, Station, Type, Date]}).
+removeValue(Monitor, Station, Type, Date) ->
+  gen_server:call({global, rPollution}, {removeValue, [Monitor, Station, Type, Date]}).
 
-getOneValue(Monitor, Station, Type, Date, Pid) ->
-  gen_server:call(Pid, {getOneValue, [Monitor, Station, Type, Date]}).
+getOneValue(Monitor, Station, Type, Date) ->
+  gen_server:call({global, rPollution}, {getOneValue, [Monitor, Station, Type, Date]}).
 
-getStationMean(Monitor, Station, Type, Pid) ->
-  gen_server:call(Pid, {getStationMean, [Monitor, Station, Type]}).
+getStationMean(Monitor, Station, Type) ->
+  gen_server:call({global, rPollution}, {getStationMean, [Monitor, Station, Type]}).
 
-getDailyMean(Monitor, Type, Day, Pid) ->
-  gen_server:call(Pid, {getDailyMean, [Monitor, Type, Day]}).
+getDailyMean(Monitor, Type, Day) ->
+  gen_server:call({global, rPollution}, {getDailyMean, [Monitor, Type, Day]}).
 
-getMaximumVariationStation(Monitor, Type, Pid) ->
-  gen_server:call(Pid, {getMaximumVariationStation, [Monitor, Type]}).
-
-
-start_link() -> gen_server:start_link(?MODULE, ok, []).
-
-stop(Pid) -> gen_server:stop(Pid).
+getMaximumVariationStation(Monitor, Type) ->
+  gen_server:call({global, rPollution}, {getMaximumVariationStation, [Monitor, Type]}).
 
 
-init(_State) -> {ok, _State}.
+start_link() -> gen_server:start_link({global, rPollution}, ?MODULE, ok, []).
+
+stop() -> gen_server:stop({global, rPollution}).
+
+
+init(State) -> {ok, State}.
 
 handle_call(Request, _From, State) -> {reply, apply(pollution, element(1, Request), element(2, Request)), State}.
 
@@ -54,3 +55,7 @@ handle_cast(_Request, State) -> {noreply, State}.
 handle_info(_Info, State) -> {noreply, State}.
 
 terminate(normal, _State) -> ok.
+
+
+crash() ->
+  gen_server:call({global, rPollution}, {crash, []}).
