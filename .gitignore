@@ -4,6 +4,13 @@
 # EUnit
 .eunit/
 
+# Mix
+_build/
+cover/
+deps/
+erl_crash.dump
+*.ez
+
 # Output
 ebin/
 
